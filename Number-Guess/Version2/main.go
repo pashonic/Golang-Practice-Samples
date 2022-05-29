@@ -37,6 +37,22 @@ func (gg *GuessGame) Guess(guess int) int {
 	}
 }
 
+func ProcessUserInput(gg *GuessGame, guess int) bool {
+	switch gg.Guess(guess) {
+	case WON:
+		fmt.Printf("!!!WINNER!!! with %v guesses left\n", gg.guesses-1)
+		return false
+	case LOSS:
+		fmt.Println("!!!GAME OVER!!!")
+		return false
+	case TOOHIGH:
+		fmt.Println("TOO HIGH")
+	case TOOLOW:
+		fmt.Println("TOO LOW")
+	}
+	return true
+}
+
 func main() {
 
 	// Seed the random generator or we get same value everytime
@@ -53,7 +69,6 @@ func main() {
 		randomNumber: randomNumber,
 	}
 
-gameLoop:
 	for {
 		fmt.Printf("Guesses Left: %v, enter guess between 0 and %v:", guessGame.guesses, maxValue)
 
@@ -61,17 +76,10 @@ gameLoop:
 		var guessedNumber int
 		fmt.Scanln(&guessedNumber)
 
-		switch guessGame.Guess(guessedNumber) {
-		case WON:
-			fmt.Printf("!!!WINNER!!! with %v guesses left\n", guessGame.guesses)
-			break gameLoop
-		case LOSS:
-			fmt.Println("!!!GAME OVER!!!")
-			break gameLoop
-		case TOOHIGH:
-			fmt.Println("TOO HIGH")
-		case TOOLOW:
-			fmt.Println("TOO LOW")
+		if !ProcessUserInput(&guessGame, guessedNumber) {
+			break
 		}
+
 	}
+
 }
