@@ -13,12 +13,11 @@ const (
 type GuessGame struct {
 	Guesses      uint64
 	RandomNumber uint64
-	lockGame     bool
 }
 
 func (self *GuessGame) Guess(guess uint64) guessResult {
 
-	if self.lockGame {
+	if self.Guesses < 1 {
 		return GAMEOVER
 	}
 
@@ -29,7 +28,6 @@ func (self *GuessGame) Guess(guess uint64) guessResult {
 	self.Guesses--
 
 	if self.Guesses < 1 {
-		self.lockGame = true
 		return LOSS
 	}
 

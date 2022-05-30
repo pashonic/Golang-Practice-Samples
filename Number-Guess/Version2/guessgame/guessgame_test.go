@@ -5,28 +5,29 @@ import (
 )
 
 func TestResponses(t *testing.T) {
-	var randomNumber uint64 = 500
+	var maxValue uint64 = 1000
+	var randomNumber uint64 = maxValue / 2
 
 	var guessGame = GuessGame{
-		Guesses:      1001,
-		RandomNumber: 500,
+		Guesses:      maxValue + 1,
+		RandomNumber: randomNumber,
 	}
 
-	for i := uint64(0); i <= 1000; i++ {
+	for i := uint64(0); i <= maxValue; i++ {
 
 		result := guessGame.Guess(i)
 
 		if i == randomNumber {
 			if result != WIN {
-				t.Fatalf(`%v should of been a win`, i)
+				t.Fatalf(`%v should of been a WIN`, i)
 			}
 		} else if i < randomNumber {
 			if result != TOOLOW {
-				t.Fatalf(`%v should of been low`, i)
+				t.Fatalf(`%v should of been LOW`, i)
 			}
 		} else {
 			if result != TOOHIGH {
-				t.Fatalf(`%v should of been high`, i)
+				t.Fatalf(`%v should of been HIGH`, i)
 			}
 		}
 	}
