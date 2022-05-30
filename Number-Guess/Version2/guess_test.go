@@ -12,7 +12,7 @@ func TestHelloName(t *testing.T) {
 	}
 
 	// BUGBUG, add more.
-	if guessGame.Guess(20) != TOOLOW {
+	if guessGame.guess(20) != TOOLOW {
 		t.Fatalf("Should be TOO LOW")
 	}
 

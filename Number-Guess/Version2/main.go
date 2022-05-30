@@ -12,33 +12,35 @@ type GuessGame struct {
 	randomNumber int
 }
 
+type guessResult int
+
 const (
-	TOOHIGH = iota
+	TOOHIGH guessResult = iota
 	TOOLOW
 	WON
 	LOSS
 )
 
-func (gg *GuessGame) Guess(guess int) int {
-	if guess == gg.randomNumber {
+func (self *GuessGame) guess(guess int) guessResult {
+	if guess == self.randomNumber {
 		return WON
 	}
 
-	gg.guesses--
+	self.guesses--
 
-	if gg.guesses < 1 {
+	if self.guesses < 1 {
 		return LOSS
 	}
 
-	if guess > gg.randomNumber {
+	if guess > self.randomNumber {
 		return TOOHIGH
 	} else {
 		return TOOLOW
 	}
 }
 
-func ProcessUserInput(gg *GuessGame, guess int) bool {
-	switch gg.Guess(guess) {
+func processUserInput(gg *GuessGame, guess int) bool {
+	switch gg.guess(guess) {
 	case WON:
 		fmt.Printf("!!!WINNER!!! with %v guesses left\n", gg.guesses-1)
 		return false
@@ -76,10 +78,9 @@ func main() {
 		var guessedNumber int
 		fmt.Scanln(&guessedNumber)
 
-		if !ProcessUserInput(&guessGame, guessedNumber) {
+		if !processUserInput(&guessGame, guessedNumber) {
 			break
 		}
 
 	}
-
 }
