@@ -1,4 +1,4 @@
-package main
+package guessgame
 
 import (
 	"testing"
@@ -6,14 +6,13 @@ import (
 
 func TestHelloName(t *testing.T) {
 	var guessGame = GuessGame{
-		guesses:      10,
-		maxValue:     100,
-		randomNumber: 45,
+		Guesses:      10,
+		MaxValue:     100,
+		RandomNumber: 45,
 	}
 
 	// BUGBUG, add more.
-	if guessGame.guess(20) != TOOLOW {
+	if guessGame.Guess(20) != TOOLOW {
 		t.Fatalf("Should be TOO LOW")
 	}
-
 }

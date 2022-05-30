@@ -4,52 +4,21 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/pashonic/Golang-Practice-Samples/Number-Guess/Version2/guessgame"
 )
 
-type GuessGame struct {
-	guesses      int
-	maxValue     int
-	randomNumber int
-}
-
-type guessResult int
-
-const (
-	TOOHIGH guessResult = iota
-	TOOLOW
-	WON
-	LOSS
-)
-
-func (self *GuessGame) guess(guess int) guessResult {
-	if guess == self.randomNumber {
-		return WON
-	}
-
-	self.guesses--
-
-	if self.guesses < 1 {
-		return LOSS
-	}
-
-	if guess > self.randomNumber {
-		return TOOHIGH
-	} else {
-		return TOOLOW
-	}
-}
-
-func processUserInput(gg *GuessGame, guess int) bool {
-	switch gg.guess(guess) {
-	case WON:
-		fmt.Printf("!!!WINNER!!! with %v guesses left\n", gg.guesses-1)
+func processUserInput(gg *guessgame.GuessGame, guess int) bool {
+	switch gg.Guess(guess) {
+	case guessgame.WON:
+		fmt.Printf("!!!WINNER!!! with %v guesses left\n", gg.Guesses-1)
 		return false
-	case LOSS:
+	case guessgame.LOSS:
 		fmt.Println("!!!GAME OVER!!!")
 		return false
-	case TOOHIGH:
+	case guessgame.TOOHIGH:
 		fmt.Println("TOO HIGH")
-	case TOOLOW:
+	case guessgame.TOOLOW:
 		fmt.Println("TOO LOW")
 	}
 	return true
@@ -65,14 +34,14 @@ func main() {
 	guesses := 10
 	randomNumber := randomGen.Intn(maxValue)
 
-	var guessGame = GuessGame{
-		guesses:      guesses,
-		maxValue:     maxValue,
-		randomNumber: randomNumber,
+	var guessGame = guessgame.GuessGame{
+		Guesses:      guesses,
+		MaxValue:     maxValue,
+		RandomNumber: randomNumber,
 	}
 
 	for {
-		fmt.Printf("Guesses Left: %v, enter guess between 0 and %v:", guessGame.guesses, maxValue)
+		fmt.Printf("Guesses Left: %v, enter guess between 0 and %v:", guessGame.Guesses, maxValue)
 
 		// Get user input
 		var guessedNumber int
@@ -81,6 +50,5 @@ func main() {
 		if !processUserInput(&guessGame, guessedNumber) {
 			break
 		}
-
 	}
 }
