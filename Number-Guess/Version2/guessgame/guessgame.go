@@ -5,24 +5,31 @@ type guessResult int
 const (
 	TOOHIGH guessResult = iota
 	TOOLOW
-	WON
+	WIN
 	LOSS
+	GAMEOVER
 )
 
 type GuessGame struct {
-	Guesses      int
-	MaxValue     int
-	RandomNumber int
+	Guesses      uint64
+	RandomNumber uint64
+	lockGame     bool
 }
 
-func (self *GuessGame) Guess(guess int) guessResult {
+func (self *GuessGame) Guess(guess uint64) guessResult {
+
+	if self.lockGame {
+		return GAMEOVER
+	}
+
 	if guess == self.RandomNumber {
-		return WON
+		return WIN
 	}
 
 	self.Guesses--
 
 	if self.Guesses < 1 {
+		self.lockGame = true
 		return LOSS
 	}
 
