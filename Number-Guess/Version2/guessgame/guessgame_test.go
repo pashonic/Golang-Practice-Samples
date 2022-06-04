@@ -7,11 +7,7 @@ import (
 func TestResponses(t *testing.T) {
 	var maxValue uint64 = 1000
 	var randomNumber uint64 = maxValue / 2
-
-	var guessGame = GuessGame{
-		Guesses:      maxValue + 1,
-		RandomNumber: randomNumber,
-	}
+	var guessGame = New(maxValue+1, randomNumber)
 
 	for i := uint64(0); i <= maxValue; i++ {
 

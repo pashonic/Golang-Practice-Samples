@@ -11,7 +11,7 @@ import (
 func processUserInput(gg *guessgame.GuessGame, guess uint64) bool {
 	switch gg.Guess(guess) {
 	case guessgame.WIN:
-		fmt.Printf("!!!WINNER!!! with %v guesses left\n", gg.Guesses-1)
+		fmt.Printf("!!!WINNER!!! with %v guesses left\n", gg.GetGuesses()-1)
 		return false
 	case guessgame.LOSS:
 		fmt.Println("!!!GAME OVER!!!")
@@ -34,19 +34,16 @@ func main() {
 	var guesses uint64 = 10
 	var maxValue uint64 = 100
 
-	var guessGame = guessgame.GuessGame{
-		Guesses:      guesses,
-		RandomNumber: randomNumber,
-	}
+	var guessGame = guessgame.New(guesses, randomNumber)
 
 	for {
-		fmt.Printf("Guesses Left: %v, enter guess between 0 and %v:", guessGame.Guesses, maxValue)
+		fmt.Printf("Guesses Left: %v, enter guess between 0 and %v:", guessGame.GetGuesses(), maxValue)
 
 		// Get user input
 		var guessedNumber uint64
 		fmt.Scanln(&guessedNumber)
 
-		if !processUserInput(&guessGame, guessedNumber) {
+		if !processUserInput(guessGame, guessedNumber) {
 			break
 		}
 	}

@@ -11,29 +11,36 @@ const (
 )
 
 type GuessGame struct {
-	Guesses      uint64
-	RandomNumber uint64
+	guesses      uint64
+	randomNumber uint64
+}
+
+func New(guesses uint64, randomNumber uint64) *GuessGame {
+	return &GuessGame{guesses, randomNumber}
+}
+
+func (self *GuessGame) GetGuesses() uint64 {
+	return self.guesses
 }
 
 func (self *GuessGame) Guess(guess uint64) guessResult {
 
-	if self.Guesses < 1 {
+	if self.guesses < 1 {
 		return GAMEOVER
 	}
 
-	if guess == self.RandomNumber {
+	if guess == self.randomNumber {
 		return WIN
 	}
 
-	self.Guesses--
+	self.guesses--
 
-	if self.Guesses < 1 {
+	if self.guesses < 1 {
 		return LOSS
 	}
 
-	if guess > self.RandomNumber {
+	if guess > self.randomNumber {
 		return TOOHIGH
-	} else {
-		return TOOLOW
 	}
+	return TOOLOW
 }
