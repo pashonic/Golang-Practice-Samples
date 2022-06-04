@@ -30,10 +30,8 @@ func main() {
 	seed := rand.NewSource(time.Now().UnixNano())
 	randomGen := rand.New(seed)
 	var randomNumber uint64 = randomGen.Uint64()
-
 	var guesses uint64 = 10
 	var maxValue uint64 = 100
-
 	var guessGame = guessgame.New(guesses, randomNumber)
 
 	for {
