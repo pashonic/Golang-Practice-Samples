@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 type rank int
 
@@ -36,6 +40,14 @@ type card struct {
 }
 type cardSet []card
 
+func (self cardSet) deal(count int) (cards cardSet) {
+	for i, _ := range rand.Perm(len(self))[:count] {
+		cards = append(cards, self[i])
+		self = append(self[:i], self[i+1:]...)
+	}
+	return cards
+}
+
 func createDeck() (deck cardSet) {
 
 	values := map[rank]int{
@@ -63,12 +75,13 @@ func createDeck() (deck cardSet) {
 			deck = append(deck, card{rank: rank, suit: suit, value: value})
 		}
 	}
+
 	return deck
 }
 
-func get15Score(deck cardSet) int {
+func get15Score(cards cardSet) int {
 	valueSet := []int{}
-	for _, v := range deck {
+	for _, v := range cards {
 		valueSet = append(valueSet, v.value)
 	}
 	return subsetSum(valueSet, 15) * 2
@@ -100,7 +113,12 @@ func subsetSumHelp(array []int, target int, pass []int, start int, sum int) int 
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	deck := createDeck()
 
-	fmt.Println(get15Score(deck))
+	hand := deck.deal(5)
+
+	fmt.Println(hand)
+	fmt.Println(get15Score(hand))
 }
