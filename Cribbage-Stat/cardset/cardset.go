@@ -1,3 +1,4 @@
+package cardset
 
 type rank int
 
@@ -33,7 +34,7 @@ type card struct {
 }
 type cardSet []card
 
-func createDeck() (deck cardSet) {
+func CreateDeck() (deck cardSet) {
 
 	values := map[rank]int{
 		ACE:   1,
