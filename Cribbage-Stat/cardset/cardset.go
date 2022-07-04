@@ -1,9 +1,11 @@
 package cardset
 
-type rank int
+import "math/rand"
+
+type Rank int
 
 const (
-	ACE rank = iota
+	ACE Rank = iota
 	TWO
 	THREE
 	FOUR
@@ -18,49 +20,26 @@ const (
 	KING
 )
 
-type suit int
+type Suit int
 
 const (
-	HEART suit = iota
+	HEART Suit = iota
 	SPADE
 	DIAMOND
 	CLUB
 )
 
-type card struct {
-	rank  rank
-	suit  suit
-	value int
+type Card struct {
+	Rank Rank
+	Suit Suit
 }
-type cardSet []card
 
-func CreateDeck() (deck cardSet) {
+type CardInterface interface{}
 
-	values := map[rank]int{
-		ACE:   1,
-		TWO:   2,
-		THREE: 3,
-		FOUR:  4,
-		FIVE:  5,
-		SIX:   6,
-		SEVEN: 7,
-		EIGHT: 8,
-		NINE:  9,
-		TEN:   10,
-		JOKER: 10,
-		QUEEN: 10,
-		KING:  10,
+func Deal(in []CardInterface, count int) (out []CardInterface) {
+	for i, _ := range rand.Perm(len(in))[:count] {
+		out = append(out, in[i])
+		in = append(in[:i], in[i+1:]...)
 	}
-
-	suits := []suit{
-		HEART, SPADE, DIAMOND, CLUB,
-	}
-
-	for rank, value := range values {
-		for _, suit := range suits {
-			deck = append(deck, card{rank: rank, suit: suit, value: value})
-		}
-	}
-
-	return deck
+	return
 }
