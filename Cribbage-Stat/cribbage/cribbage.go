@@ -122,12 +122,12 @@ func (cards *CardSet) GetPairScore() int {
 		0: 2,
 		2: 4,
 		4: 6,
-		6: 12,
+		6: -1,
 	}
 
 	total := 0
 	for _, card := range *cards {
-		if subTotals[int(card.Rank)] > 6 {
+		if subTotals[int(card.Rank)] == -1 {
 			continue
 		}
 		total += subTotals[int(card.Rank)]
