@@ -1,6 +1,8 @@
 package cribbage
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 type Rank int
 
@@ -73,17 +75,20 @@ func CreateDeck() (deck CardSet) {
 
 func (cards *CardSet) Deal(count int) CardSet {
 	var outCards CardSet
-	for i, _ := range rand.Perm(len(*cards))[:count] {
-		outCards = append(outCards, (*cards)[i])
-		*cards = append((*cards)[:i], (*cards)[i+1:]...)
+	len := len(*cards)
+	for j := 0; j < count; j++ {
+		index := rand.Intn(len)
+		outCards = append(outCards, (*cards)[index])
+		*cards = append((*cards)[:index], (*cards)[index+1:]...)
+		len--
 	}
 	return outCards
 }
 
-func (cards *CardSet) Get15Score() int {
+func (cards *CardSet) GetFifteenScore() int {
 	valueSet := []int{}
-	for _, v := range *cards {
-		valueSet = append(valueSet, v.value)
+	for _, card := range *cards {
+		valueSet = append(valueSet, card.value)
 	}
 
 	total := 0
@@ -108,5 +113,26 @@ func subsetSum(array []int, target int, pass []int, start int, sum int) int {
 	for i := start; i < len(array); i++ {
 		total += subsetSum(array, target, append(pass, array[i]), i+1, sum+array[i])
 	}
+	return total
+}
+
+func (cards *CardSet) GetPairScore() int {
+	subTotals := map[int]int{}
+	values := map[int]int{
+		0: 2,
+		2: 4,
+		4: 6,
+		6: 12,
+	}
+
+	total := 0
+	for _, card := range *cards {
+		if subTotals[int(card.Rank)] > 6 {
+			continue
+		}
+		total += subTotals[int(card.Rank)]
+		subTotals[int(card.Rank)] = values[subTotals[int(card.Rank)]]
+	}
+
 	return total
 }

@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/pashonic/Golang-Practice-Samples/Cribbage-Stat/cardset"
 	"github.com/pashonic/Golang-Practice-Samples/Cribbage-Stat/cribbage"
 )
 
@@ -14,9 +13,7 @@ func main() {
 
 	deck := cribbage.CreateDeck()
 
-	hand := cardset.Deal(deck, 4)
-
 	fmt.Println(deck)
-	fmt.Println("BUGBUG")
-	fmt.Println(hand)
+
+	fmt.Println(deck.GetPairScore())
 }
