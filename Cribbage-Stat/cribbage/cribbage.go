@@ -139,10 +139,6 @@ func (cards *CardSet) GetPairScore() int {
 	return total
 }
 
-func cardComp(cardA, cardB Card) bool {
-	return int(cardA.Rank) > int(cardB.Rank)
-}
-
 func (cards *CardSet) GetRunScore() int {
 	copyCardSet := make(CardSet, len(*cards))
 	copy(copyCardSet, *cards)
@@ -174,4 +170,35 @@ func (cards *CardSet) GetRunScore() int {
 	}
 
 	return scoreTotal
+}
+
+func (cards *CardSet) GetFlushScore() int {
+	suitMap := map[Suit]int{
+		HEART:   0,
+		SPADE:   0,
+		DIAMOND: 0,
+		CLUB:    0,
+	}
+
+	for _, card := range *cards {
+		suitMap[card.Suit]++
+	}
+
+	scoreTotal := 0
+	for _, total := range suitMap {
+		if total >= 4 {
+			scoreTotal += total
+		}
+	}
+
+	return scoreTotal
+}
+
+func (cards *CardSet) GetNobScore(cutCard *Card) int {
+	for _, card := range *cards {
+		if card.Rank == JOKER && card.Suit == cutCard.Suit {
+			return 1
+		}
+	}
+	return 0
 }

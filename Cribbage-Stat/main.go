@@ -13,10 +13,19 @@ func main() {
 
 	var deck = cribbage.CardSet{
 		{Rank: cribbage.ACE, Suit: cribbage.CLUB, Value: 3},
-		{Rank: cribbage.TWO, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.TWO, Suit: cribbage.HEART, Value: 3},
 		{Rank: cribbage.THREE, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.FOUR, Suit: cribbage.SPADE, Value: 3},
 		{Rank: cribbage.FOUR, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.FOUR, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.FOUR, Suit: cribbage.SPADE, Value: 3},
+		{Rank: cribbage.FOUR, Suit: cribbage.SPADE, Value: 3},
+		{Rank: cribbage.JOKER, Suit: cribbage.HEART, Value: 3},
 	}
 
-	fmt.Println(deck.GetRunScore())
+	var nob = cribbage.CardSet{
+		{Rank: cribbage.ACE, Suit: cribbage.SPADE, Value: 3},
+	}
+
+	fmt.Println(deck.GetNobScore(&nob[0]))
 }
