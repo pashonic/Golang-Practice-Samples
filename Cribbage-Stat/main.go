@@ -16,10 +16,6 @@ func main() {
 		{Rank: cribbage.TWO, Suit: cribbage.CLUB, Value: 3},
 		{Rank: cribbage.THREE, Suit: cribbage.CLUB, Value: 3},
 		{Rank: cribbage.FOUR, Suit: cribbage.CLUB, Value: 3},
-		{Rank: cribbage.SIX, Suit: cribbage.CLUB, Value: 3},
-		{Rank: cribbage.SEVEN, Suit: cribbage.CLUB, Value: 3},
-		{Rank: cribbage.EIGHT, Suit: cribbage.CLUB, Value: 3},
-		{Rank: cribbage.NINE, Suit: cribbage.CLUB, Value: 3},
 	}
 
 	fmt.Println(deck.GetRunScore())

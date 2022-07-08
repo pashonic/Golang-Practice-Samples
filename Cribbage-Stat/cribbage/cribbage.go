@@ -151,24 +151,25 @@ func (cards *CardSet) GetRunScore() int {
 	})
 
 	scoreTotal := 0
-	runTracker := 0
+	runTracker := 1
 	var prevCard *Card = nil
 	fmt.Println(copyCardSet)
 	for i := 0; i < len(copyCardSet); i++ {
+
 		if prevCard != nil {
 			if copyCardSet[i].Rank-1 == prevCard.Rank {
 				runTracker++
-				if runTracker == 3 {
-					scoreTotal += runTracker
-				} else if runTracker > 3 {
-					scoreTotal++
-				}
 			} else {
 				runTracker = 1
 			}
-		} else {
-			runTracker++
 		}
+
+		if runTracker == 3 {
+			scoreTotal += runTracker
+		} else if runTracker > 3 {
+			scoreTotal++
+		}
+
 		prevCard = &copyCardSet[i]
 	}
 
