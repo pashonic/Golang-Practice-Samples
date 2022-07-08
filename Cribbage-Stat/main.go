@@ -11,9 +11,16 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	deck := cribbage.CreateDeck()
+	var deck = cribbage.CardSet{
+		{Rank: cribbage.ACE, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.TWO, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.THREE, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.FOUR, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.SIX, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.SEVEN, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.EIGHT, Suit: cribbage.CLUB, Value: 3},
+		{Rank: cribbage.NINE, Suit: cribbage.CLUB, Value: 3},
+	}
 
-	fmt.Println(deck)
-
-	fmt.Println(deck.GetPairScore())
+	fmt.Println(deck.GetRunScore())
 }

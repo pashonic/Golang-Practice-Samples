@@ -1,7 +1,9 @@
 package cribbage
 
 import (
+	"fmt"
 	"math/rand"
+	"sort"
 )
 
 type Rank int
@@ -34,7 +36,7 @@ const (
 type Card struct {
 	Rank  Rank
 	Suit  Suit
-	value int
+	Value int
 }
 
 type CardSet []Card
@@ -66,7 +68,7 @@ func CreateDeck() (deck CardSet) {
 
 	for rank, value := range values {
 		for _, suit := range suits {
-			deck = append(deck, Card{Rank: rank, Suit: suit, value: value})
+			deck = append(deck, Card{Rank: rank, Suit: suit, Value: value})
 		}
 	}
 
@@ -88,7 +90,7 @@ func (cards *CardSet) Deal(count int) CardSet {
 func (cards *CardSet) GetFifteenScore() int {
 	valueSet := []int{}
 	for _, card := range *cards {
-		valueSet = append(valueSet, card.value)
+		valueSet = append(valueSet, card.Value)
 	}
 
 	total := 0
@@ -135,4 +137,40 @@ func (cards *CardSet) GetPairScore() int {
 	}
 
 	return total
+}
+
+func cardComp(cardA, cardB Card) bool {
+	return int(cardA.Rank) > int(cardB.Rank)
+}
+
+func (cards *CardSet) GetRunScore() int {
+	copyCardSet := make(CardSet, len(*cards))
+	copy(copyCardSet, *cards)
+	sort.Slice(copyCardSet, func(i, j int) bool {
+		return (copyCardSet)[i].Rank < (copyCardSet)[j].Rank
+	})
+
+	scoreTotal := 0
+	runTracker := 0
+	var prevCard *Card = nil
+	fmt.Println(copyCardSet)
+	for i := 0; i < len(copyCardSet); i++ {
+		if prevCard != nil {
+			if copyCardSet[i].Rank-1 == prevCard.Rank {
+				runTracker++
+				if runTracker == 3 {
+					scoreTotal += runTracker
+				} else if runTracker > 3 {
+					scoreTotal++
+				}
+			} else {
+				runTracker = 1
+			}
+		} else {
+			runTracker++
+		}
+		prevCard = &copyCardSet[i]
+	}
+
+	return scoreTotal
 }
