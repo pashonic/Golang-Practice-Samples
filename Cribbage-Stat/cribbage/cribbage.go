@@ -1,7 +1,6 @@
 package cribbage
 
 import (
-	"fmt"
 	"math/rand"
 	"sort"
 )
@@ -145,30 +144,27 @@ func (cards *CardSet) GetRunScore() int {
 	sort.Slice(copyCardSet, func(i, j int) bool {
 		return (copyCardSet)[i].Rank < (copyCardSet)[j].Rank
 	})
-
 	scoreTotal := 0
 	runTracker := 1
+	multiplier := 1
 	var prevCard *Card = nil
-	fmt.Println(copyCardSet)
 	for i := 0; i < len(copyCardSet); i++ {
-
 		if prevCard != nil {
 			if copyCardSet[i].Rank-1 == prevCard.Rank {
 				runTracker++
+			} else if copyCardSet[i].Rank == prevCard.Rank {
+				multiplier++
 			} else {
+				if runTracker >= 3 {
+					scoreTotal += (runTracker * multiplier)
+				}
+				multiplier = 1
 				runTracker = 1
 			}
 		}
-
-		if runTracker == 3 {
-			scoreTotal += runTracker
-		} else if runTracker > 3 {
-			scoreTotal++
-		}
-
 		prevCard = &copyCardSet[i]
 	}
-
+	scoreTotal += (runTracker * multiplier)
 	return scoreTotal
 }
 
@@ -194,6 +190,36 @@ func (cards *CardSet) GetFlushScore() int {
 	return scoreTotal
 }
 
+func (cards *CardSet) GetBestCards(count int) {
+	bestCards := CardSet{}
+	bestScore := 0
+	for i := 0; i < len(*cards)-2; i++ {
+		curCards, score := getCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
+		if score > bestScore {
+			bestCards = curCards
+			bestScore = score
+		}
+	}
+}
+
+func getCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
+	if len(set) == count {
+		return set, set.GetTotalScore()
+	}
+
+	bestCards := CardSet{}
+	bestScore := 0
+	for i := start; i < len(*cards); i++ {
+		curCards, score := getCombinations(cards, count, append(set, (*cards)[i]), i+1)
+		if score > bestScore {
+			bestCards = curCards
+			bestScore = score
+		}
+	}
+
+	return bestCards, bestScore
+}
+
 func (cards *CardSet) GetNobScore(cutCard *Card) int {
 	for _, card := range *cards {
 		if card.Rank == JOKER && card.Suit == cutCard.Suit {
@@ -201,4 +227,19 @@ func (cards *CardSet) GetNobScore(cutCard *Card) int {
 		}
 	}
 	return 0
+}
+
+func (cards *CardSet) GetTotalScore() int {
+	scoreFunctions := []func() int{
+		cards.GetFifteenScore,
+		cards.GetFlushScore,
+		cards.GetPairScore,
+		cards.GetRunScore,
+	}
+
+	total := 0
+	for _, scoreFun := range scoreFunctions {
+		total += scoreFun()
+	}
+	return total
 }
