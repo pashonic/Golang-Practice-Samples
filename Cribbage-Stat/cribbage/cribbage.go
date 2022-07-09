@@ -198,34 +198,29 @@ func (cards *CardSet) GetFlushScore() int {
 }
 
 func (cards *CardSet) GetBestCards(count int) {
-	var bestCards CardSet
-	bestScore := 0
-	for i := 0; i < len(*cards)-2; i++ {
-		curCards, score := getCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
-		if score > bestScore {
-			bestCards = curCards
-			bestScore = score
-		}
+	for i := 0; i <= len(*cards)-count; i++ {
+		set, score := getCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
+		fmt.Println(set, "-", score)
 	}
-	fmt.Println(bestCards)
 }
 
 func getCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
 	if len(set) == count {
-		return set, set.GetTotalScore()
+		setCopy := make(CardSet, len(set))
+		copy(setCopy, set)
+		return setCopy, setCopy.GetTotalScore()
 	}
 
-	bestCards := CardSet{}
 	bestScore := 0
+	var bestSet CardSet
 	for i := start; i < len(*cards); i++ {
-		curCards, score := getCombinations(cards, count, append(set, (*cards)[i]), i+1)
-		if score > bestScore {
-			bestCards = curCards
-			bestScore = score
+		curSet, curScore := getCombinations(cards, count, append(set, (*cards)[i]), i+1)
+		if bestScore <= curScore {
+			bestSet = curSet
+			bestScore = curScore
 		}
 	}
-
-	return bestCards, bestScore
+	return bestSet, bestScore
 }
 
 func (cards *CardSet) GetNobScore(cutCard *Card) int {

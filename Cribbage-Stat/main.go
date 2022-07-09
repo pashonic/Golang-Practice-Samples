@@ -13,17 +13,24 @@ func main() {
 		hand := deck.Deal(6)
 
 		hand.GetBestCards(4)
-	*/
 
+	*/
 	deck := cribbage.CardSet{
-		cribbage.Card{Rank: cribbage.ACE, Suit: cribbage.SPADE, Value: 6},
-		cribbage.Card{Rank: cribbage.TWO, Suit: cribbage.HEART, Value: 6},
-		cribbage.Card{Rank: cribbage.TWO, Suit: cribbage.HEART, Value: 6},
-		cribbage.Card{Rank: cribbage.TWO, Suit: cribbage.HEART, Value: 6},
-		cribbage.Card{Rank: cribbage.THREE, Suit: cribbage.HEART, Value: 6},
-		cribbage.Card{Rank: cribbage.FOUR, Suit: cribbage.HEART, Value: 6},
+		cribbage.Card{Rank: cribbage.FOUR, Suit: cribbage.HEART, Value: 7},
+		cribbage.Card{Rank: cribbage.FOUR, Suit: cribbage.HEART, Value: 8},
+		cribbage.Card{Rank: cribbage.FOUR, Suit: cribbage.HEART, Value: 7},
 	}
 
-	fmt.Println(deck.GetRunScore())
+	fmt.Println(deck.GetPairScore())
 
+	/*
+		deck := cribbage.CardSet{
+			cribbage.Card{Rank: cribbage.SEVEN, Suit: cribbage.SPADE, Value: 7},
+			cribbage.Card{Rank: cribbage.EIGHT, Suit: cribbage.HEART, Value: 8},
+			cribbage.Card{Rank: cribbage.SEVEN, Suit: cribbage.HEART, Value: 7},
+			cribbage.Card{Rank: cribbage.FOUR, Suit: cribbage.HEART, Value: 4},
+		}
+
+		fmt.Println(deck.GetBestCards(4))
+	*/
 }
