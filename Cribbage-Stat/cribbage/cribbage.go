@@ -1,6 +1,7 @@
 package cribbage
 
 import (
+	"fmt"
 	"math/rand"
 	"sort"
 )
@@ -164,7 +165,9 @@ func (cards *CardSet) GetRunScore() int {
 		}
 		prevCard = &copyCardSet[i]
 	}
-	scoreTotal += (runTracker * multiplier)
+	if runTracker >= 3 {
+		scoreTotal += (runTracker * multiplier)
+	}
 	return scoreTotal
 }
 
@@ -200,6 +203,7 @@ func (cards *CardSet) GetBestCards(count int) {
 			bestScore = score
 		}
 	}
+	fmt.Println(bestCards)
 }
 
 func getCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
