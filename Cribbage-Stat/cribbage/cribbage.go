@@ -191,7 +191,7 @@ func (cards *CardSet) GetFlushScore() int {
 }
 
 func (cards *CardSet) GetBestCards(count int) {
-	bestCards := CardSet{}
+	var bestCards CardSet
 	bestScore := 0
 	for i := 0; i < len(*cards)-2; i++ {
 		curCards, score := getCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
