@@ -145,6 +145,14 @@ func (cards *CardSet) GetRunScore() int {
 	sort.Slice(copyCardSet, func(i, j int) bool {
 		return (copyCardSet)[i].Rank < (copyCardSet)[j].Rank
 	})
+
+	getRunTotal := func(runTracker int, multiplier int) int {
+		if runTracker >= 3 {
+			return (runTracker * multiplier)
+		}
+		return 0
+	}
+
 	scoreTotal := 0
 	runTracker := 1
 	multiplier := 1
@@ -156,18 +164,14 @@ func (cards *CardSet) GetRunScore() int {
 			} else if copyCardSet[i].Rank == prevCard.Rank {
 				multiplier++
 			} else {
-				if runTracker >= 3 {
-					scoreTotal += (runTracker * multiplier)
-				}
+				scoreTotal += getRunTotal(runTracker, multiplier)
 				multiplier = 1
 				runTracker = 1
 			}
 		}
 		prevCard = &copyCardSet[i]
 	}
-	if runTracker >= 3 {
-		scoreTotal += (runTracker * multiplier)
-	}
+	scoreTotal += getRunTotal(runTracker, multiplier)
 	return scoreTotal
 }
 
