@@ -4,13 +4,22 @@ import (
 	"testing"
 )
 
-var hand29CutCard = Card{Rank: JOKER, Suit: HEART, Value: 10}
+var hand29CutCard = Card{Rank: FIVE, Suit: HEART, Value: 5}
 var hand29 CardSet = CardSet{
-	Card{Rank: FIVE, Suit: HEART, Value: 5},
+	Card{Rank: JOKER, Suit: HEART, Value: 10},
 	Card{Rank: FIVE, Suit: DIAMOND, Value: 5},
 	Card{Rank: FIVE, Suit: SPADE, Value: 5},
 	Card{Rank: FIVE, Suit: CLUB, Value: 5},
 	hand29CutCard,
+}
+
+var handCutCard2 = Card{Rank: EIGHT, Suit: SPADE, Value: 8}
+var nobHand CardSet = CardSet{
+	Card{Rank: THREE, Suit: SPADE, Value: 3},
+	Card{Rank: THREE, Suit: HEART, Value: 3},
+	Card{Rank: TWO, Suit: SPADE, Value: 2},
+	Card{Rank: TEN, Suit: DIAMOND, Value: 10},
+	handCutCard2,
 }
 
 var handDoubleRun CardSet = CardSet{
@@ -121,6 +130,14 @@ func TestOverallScoring(t *testing.T) {
 	if score != expectedScore {
 		t.Fatalf(`%v is not %v`, score, expectedScore)
 	}
+
+	// Test non-nob hand.
+	score = nobHand.GetTotalScoreWithNob(&handCutCard2)
+	expectedScore = 6
+	if score != expectedScore {
+		t.Fatalf(`%v is not %v`, score, expectedScore)
+	}
+
 }
 
 func TestGetFifteenScore(t *testing.T) {

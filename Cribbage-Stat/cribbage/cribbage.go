@@ -83,7 +83,7 @@ func CreateDeck() (deck CardSet) {
 
 // GetBestCards returns highest scoring set of given count of cards
 func (cards *CardSet) GetBestCards(count int) CardSet {
-	bestScore := 0
+	var bestScore int = 0
 	var bestSet CardSet
 	for i := 0; i <= len(*cards)-count; i++ {
 		set, score := getCardCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
@@ -258,7 +258,7 @@ func (cards *CardSet) GetNobScore(cutCard *Card) int {
 		if card == *cutCard {
 			continue
 		}
-		if card.Suit == cutCard.Suit {
+		if card.Rank == JOKER && card.Suit == cutCard.Suit {
 			return 1
 		}
 	}
