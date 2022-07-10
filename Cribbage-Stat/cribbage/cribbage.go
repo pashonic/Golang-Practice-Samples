@@ -1,7 +1,6 @@
 package cribbage
 
 import (
-	"fmt"
 	"math/rand"
 	"sort"
 )
@@ -75,6 +74,38 @@ func CreateDeck() (deck CardSet) {
 	return deck
 }
 
+func (cards *CardSet) GetBestCards(count int) CardSet {
+	bestScore := 0
+	var bestSet CardSet
+	for i := 0; i <= len(*cards)-count; i++ {
+		set, score := getCardCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
+		if bestScore <= score {
+			bestSet = set
+			bestScore = score
+		}
+	}
+	return bestSet
+}
+
+func getCardCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
+	if len(set) == count {
+		setCopy := make(CardSet, len(set))
+		copy(setCopy, set)
+		return setCopy, setCopy.GetTotalScore()
+	}
+
+	bestScore := 0
+	var bestSet CardSet
+	for i := start; i < len(*cards); i++ {
+		curSet, curScore := getCardCombinations(cards, count, append(set, (*cards)[i]), i+1)
+		if bestScore <= curScore {
+			bestSet = curSet
+			bestScore = curScore
+		}
+	}
+	return bestSet, bestScore
+}
+
 func (inCards *CardSet) Deal(count int) CardSet {
 	var outCards CardSet
 	len := len(*inCards)
@@ -140,6 +171,8 @@ func (cards *CardSet) GetPairScore() int {
 }
 
 func (cards *CardSet) GetRunScore() int {
+
+	// Copy cards and order copy.
 	copyCardSet := make(CardSet, len(*cards))
 	copy(copyCardSet, *cards)
 	sort.Slice(copyCardSet, func(i, j int) bool {
@@ -153,26 +186,35 @@ func (cards *CardSet) GetRunScore() int {
 		return 0
 	}
 
-	scoreTotal := 0
+	runTotal := 0
 	runTracker := 1
+	groupCounter := 1
 	multiplier := 1
-	var prevCard *Card = nil
-	for i := 0; i < len(copyCardSet); i++ {
-		if prevCard != nil {
-			if copyCardSet[i].Rank-1 == prevCard.Rank {
-				runTracker++
-			} else if copyCardSet[i].Rank == prevCard.Rank {
-				multiplier++
-			} else {
-				scoreTotal += getRunTotal(runTracker, multiplier)
-				multiplier = 1
-				runTracker = 1
-			}
+	var prevCard *Card = &copyCardSet[0]
+	for i := 1; i < len(copyCardSet); i++ {
+
+		// Handle different but increment rank card.
+		if copyCardSet[i].Rank-1 == prevCard.Rank {
+			runTracker++
+			multiplier = multiplier * groupCounter
+			groupCounter = 1
+
+			// Handle same card.
+		} else if copyCardSet[i].Rank == prevCard.Rank {
+			groupCounter++
+
+			// Finished this run, add to total, reset trackers.
+		} else {
+			runTotal += getRunTotal(runTracker, multiplier)
+			groupCounter = 1
+			multiplier = 1
+			runTracker = 1
 		}
+
 		prevCard = &copyCardSet[i]
 	}
-	scoreTotal += getRunTotal(runTracker, multiplier)
-	return scoreTotal
+
+	return runTotal + getRunTotal(runTracker, (multiplier*groupCounter))
 }
 
 func (cards *CardSet) GetFlushScore() int {
@@ -195,32 +237,6 @@ func (cards *CardSet) GetFlushScore() int {
 	}
 
 	return scoreTotal
-}
-
-func (cards *CardSet) GetBestCards(count int) {
-	for i := 0; i <= len(*cards)-count; i++ {
-		set, score := getCardCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
-		fmt.Println(set, "-", score)
-	}
-}
-
-func getCardCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
-	if len(set) == count {
-		setCopy := make(CardSet, len(set))
-		copy(setCopy, set)
-		return setCopy, setCopy.GetTotalScore()
-	}
-
-	bestScore := 0
-	var bestSet CardSet
-	for i := start; i < len(*cards); i++ {
-		curSet, curScore := getCardCombinations(cards, count, append(set, (*cards)[i]), i+1)
-		if bestScore <= curScore {
-			bestSet = curSet
-			bestScore = curScore
-		}
-	}
-	return bestSet, bestScore
 }
 
 func (cards *CardSet) GetNobScore(cutCard *Card) int {
