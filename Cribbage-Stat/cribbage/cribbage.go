@@ -5,8 +5,10 @@ import (
 	"sort"
 )
 
+// Rank represents a card rank
 type Rank int
 
+// Rank represents a card rank
 const (
 	ACE Rank = iota
 	TWO
@@ -23,8 +25,10 @@ const (
 	KING
 )
 
+// Suit represents a card suit
 type Suit int
 
+// Suit represents a card suit
 const (
 	HEART Suit = iota
 	SPADE
@@ -32,14 +36,17 @@ const (
 	CLUB
 )
 
+// Card represets a playing card
 type Card struct {
 	Rank  Rank
 	Suit  Suit
 	Value int
 }
 
+// CardSet represets a set of playing cards
 type CardSet []Card
 
+// CreateDeck returns a full standard deck of cards
 func CreateDeck() (deck CardSet) {
 
 	values := map[Rank]int{
@@ -74,6 +81,7 @@ func CreateDeck() (deck CardSet) {
 	return deck
 }
 
+// GetBestCards returns highest scoring set of given count of cards
 func (cards *CardSet) GetBestCards(count int) CardSet {
 	bestScore := 0
 	var bestSet CardSet
@@ -106,18 +114,20 @@ func getCardCombinations(cards *CardSet, count int, set CardSet, start int) (Car
 	return bestSet, bestScore
 }
 
-func (inCards *CardSet) Deal(count int) CardSet {
+// Deal returns a given amount (count) of cards
+func (cards *CardSet) Deal(count int) CardSet {
 	var outCards CardSet
-	len := len(*inCards)
+	len := len(*cards)
 	for j := 0; j < count; j++ {
 		index := rand.Intn(len)
-		outCards = append(outCards, (*inCards)[index])
-		*inCards = append((*inCards)[:index], (*inCards)[index+1:]...)
+		outCards = append(outCards, (*cards)[index])
+		*cards = append((*cards)[:index], (*cards)[index+1:]...)
 		len--
 	}
 	return outCards
 }
 
+// GetFifteenScore returns 15 score
 func (cards *CardSet) GetFifteenScore() int {
 	valueSet := []int{}
 	for _, card := range *cards {
@@ -149,6 +159,7 @@ func subsetSum(array []int, target int, pass []int, start int, sum int) int {
 	return total
 }
 
+// GetPairScore returns cribbage pair score
 func (cards *CardSet) GetPairScore() int {
 	subTotals := map[int]int{}
 	values := map[int]int{
@@ -170,6 +181,7 @@ func (cards *CardSet) GetPairScore() int {
 	return total
 }
 
+// GetRunScore returns cribbage run score
 func (cards *CardSet) GetRunScore() int {
 
 	// Copy cards and order copy.
@@ -217,6 +229,7 @@ func (cards *CardSet) GetRunScore() int {
 	return runTotal + getRunTotal(runTracker, (multiplier*groupCounter))
 }
 
+// GetFlushScore returns flush score of given cards
 func (cards *CardSet) GetFlushScore() int {
 	suitMap := map[Suit]int{
 		HEART:   0,
@@ -239,6 +252,7 @@ func (cards *CardSet) GetFlushScore() int {
 	return scoreTotal
 }
 
+// GetNobScore returns nob score with given cut card
 func (cards *CardSet) GetNobScore(cutCard *Card) int {
 	for _, card := range *cards {
 		if card == *cutCard {
@@ -251,10 +265,12 @@ func (cards *CardSet) GetNobScore(cutCard *Card) int {
 	return 0
 }
 
+// GetTotalScoreWithNob returns total score with given cut card
 func (cards *CardSet) GetTotalScoreWithNob(cutCard *Card) int {
 	return cards.GetTotalScore() + cards.GetNobScore(cutCard)
 }
 
+// GetTotalScore returns total score
 func (cards *CardSet) GetTotalScore() int {
 	scoreFunctions := []func() int{
 		cards.GetFifteenScore,

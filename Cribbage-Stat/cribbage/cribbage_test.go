@@ -77,6 +77,14 @@ var hand4Pair CardSet = CardSet{
 	Card{Rank: JOKER, Suit: DIAMOND, Value: 10},
 }
 
+var hand2x2Pair CardSet = CardSet{
+	Card{Rank: TWO, Suit: HEART, Value: 2},
+	Card{Rank: TWO, Suit: DIAMOND, Value: 2},
+	Card{Rank: THREE, Suit: SPADE, Value: 3},
+	Card{Rank: THREE, Suit: CLUB, Value: 3},
+	Card{Rank: JOKER, Suit: DIAMOND, Value: 10},
+}
+
 func TestOverallScoring(t *testing.T) {
 
 	// Test 29 hard total score.
@@ -169,6 +177,21 @@ func TestPairScore(t *testing.T) {
 	// Test 4 pair
 	score = hand4Pair.GetPairScore()
 	expectedScore = 12
+	if score != expectedScore {
+		t.Fatalf(`%v is not %v`, score, expectedScore)
+	}
+
+	// Test 2x2 pair
+	score = hand2x2Pair.GetPairScore()
+	expectedScore = 4
+	if score != expectedScore {
+		t.Fatalf(`%v is not %v`, score, expectedScore)
+	}
+
+	// Test pair score of entire deck
+	deck := CreateDeck()
+	score = deck.GetPairScore()
+	expectedScore = 156
 	if score != expectedScore {
 		t.Fatalf(`%v is not %v`, score, expectedScore)
 	}
