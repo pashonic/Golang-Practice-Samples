@@ -75,13 +75,13 @@ func CreateDeck() (deck CardSet) {
 	return deck
 }
 
-func (cards *CardSet) Deal(count int) CardSet {
+func (inCards *CardSet) Deal(count int) CardSet {
 	var outCards CardSet
-	len := len(*cards)
+	len := len(*inCards)
 	for j := 0; j < count; j++ {
 		index := rand.Intn(len)
-		outCards = append(outCards, (*cards)[index])
-		*cards = append((*cards)[:index], (*cards)[index+1:]...)
+		outCards = append(outCards, (*inCards)[index])
+		*inCards = append((*inCards)[:index], (*inCards)[index+1:]...)
 		len--
 	}
 	return outCards
@@ -199,12 +199,12 @@ func (cards *CardSet) GetFlushScore() int {
 
 func (cards *CardSet) GetBestCards(count int) {
 	for i := 0; i <= len(*cards)-count; i++ {
-		set, score := getCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
+		set, score := getCardCombinations(cards, count, CardSet{(*cards)[i]}, i+1)
 		fmt.Println(set, "-", score)
 	}
 }
 
-func getCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
+func getCardCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet, int) {
 	if len(set) == count {
 		setCopy := make(CardSet, len(set))
 		copy(setCopy, set)
@@ -214,7 +214,7 @@ func getCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet
 	bestScore := 0
 	var bestSet CardSet
 	for i := start; i < len(*cards); i++ {
-		curSet, curScore := getCombinations(cards, count, append(set, (*cards)[i]), i+1)
+		curSet, curScore := getCardCombinations(cards, count, append(set, (*cards)[i]), i+1)
 		if bestScore <= curScore {
 			bestSet = curSet
 			bestScore = curScore
@@ -225,11 +225,18 @@ func getCombinations(cards *CardSet, count int, set CardSet, start int) (CardSet
 
 func (cards *CardSet) GetNobScore(cutCard *Card) int {
 	for _, card := range *cards {
-		if card.Rank == JOKER && card.Suit == cutCard.Suit {
+		if card == *cutCard {
+			continue
+		}
+		if card.Suit == cutCard.Suit {
 			return 1
 		}
 	}
 	return 0
+}
+
+func (cards *CardSet) GetTotalScoreWithNob(cutCard *Card) int {
+	return cards.GetTotalScore() + cards.GetNobScore(cutCard)
 }
 
 func (cards *CardSet) GetTotalScore() int {
@@ -241,8 +248,8 @@ func (cards *CardSet) GetTotalScore() int {
 	}
 
 	total := 0
-	for _, scoreFun := range scoreFunctions {
-		total += scoreFun()
+	for _, scoreFunc := range scoreFunctions {
+		total += scoreFunc()
 	}
 	return total
 }
