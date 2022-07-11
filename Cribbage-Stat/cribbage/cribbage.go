@@ -81,7 +81,8 @@ func CreateDeck() (deck CardSet) {
 	return deck
 }
 
-// GetBestCards returns highest scoring set of given count of cards
+// GetBestCards returns highest scoring set of given count of cards.
+// Complexity: O(log n)
 func (cards *CardSet) GetBestCards(count int) CardSet {
 	var bestScore int = 0
 	var bestSet CardSet
@@ -115,6 +116,7 @@ func getCardCombinations(cards *CardSet, count int, set CardSet, start int) (Car
 }
 
 // Deal returns a given amount (count) of cards
+// Complexity: O(n)
 func (cards *CardSet) Deal(count int) CardSet {
 	var outCards CardSet
 	len := len(*cards)
@@ -128,6 +130,7 @@ func (cards *CardSet) Deal(count int) CardSet {
 }
 
 // GetFifteenScore returns 15 score
+// Complexity: O(log n)
 func (cards *CardSet) GetFifteenScore() int {
 	valueSet := []int{}
 	for _, card := range *cards {
@@ -160,6 +163,7 @@ func subsetSum(array []int, target int, pass []int, start int, sum int) int {
 }
 
 // GetPairScore returns cribbage pair score
+// Complexity: O(n)
 func (cards *CardSet) GetPairScore() int {
 	subTotals := map[int]int{}
 	values := map[int]int{
@@ -182,6 +186,7 @@ func (cards *CardSet) GetPairScore() int {
 }
 
 // GetRunScore returns cribbage run score
+// Complexity: O(n)
 func (cards *CardSet) GetRunScore() int {
 
 	// Copy cards and order copy.
@@ -230,6 +235,7 @@ func (cards *CardSet) GetRunScore() int {
 }
 
 // GetFlushScore returns flush score of given cards
+// Complexity: O(n)
 func (cards *CardSet) GetFlushScore() int {
 	suitMap := map[Suit]int{
 		HEART:   0,
@@ -253,6 +259,7 @@ func (cards *CardSet) GetFlushScore() int {
 }
 
 // GetNobScore returns nob score with given cut card
+// Complexity: O(n)
 func (cards *CardSet) GetNobScore(cutCard *Card) int {
 	for _, card := range *cards {
 		if card == *cutCard {

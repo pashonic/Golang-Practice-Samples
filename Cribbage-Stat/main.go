@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/pashonic/Golang-Practice-Samples/Cribbage-Stat/cribbage"
 )
@@ -20,7 +21,7 @@ type sampleResult struct {
 	totalNobScore   uint64
 }
 
-func sampleRun(c chan sampleResult) {
+func dealerSimulation(c chan sampleResult) {
 
 	// Create a deck of cards
 	deck := cribbage.CreateDeck()
@@ -58,30 +59,40 @@ func main() {
 	var totalPairScore uint64 = 0
 	var totalFlushScore uint64 = 0
 	var totalNobScore uint64 = 0
-	var sampleCount int = 1000000
+	var sampleCount int = 10000000
+	var sampleThreads int = 20
+	var sampleCycles int = sampleCount / sampleThreads
 
-	ch := make(chan sampleResult)
-	for i := 0; i < sampleCount; i++ {
-		go sampleRun(ch)
+	// Run simulated cribbage hand.
+	start := time.Now()
+	finalSampleCount := 0
+	for cycle := 0; cycle < sampleCycles; cycle++ {
+		ch := make(chan sampleResult)
+
+		for i := 0; i < sampleThreads; i++ {
+			finalSampleCount++
+			go dealerSimulation(ch)
+		}
+
+		for i := 0; i < sampleThreads; i++ {
+			sampleResult := <-ch
+			total15Score += sampleResult.total15Score
+			totalRunScore += sampleResult.totalRunScore
+			totalPairScore += sampleResult.totalPairScore
+			totalFlushScore += sampleResult.totalFlushScore
+			totalNobScore += sampleResult.totalNobScore
+		}
 	}
+	duration := time.Since(start)
 
-	for i := 0; i < sampleCount; i++ {
-		sampleResult := <-ch
-		total15Score += sampleResult.total15Score
-		totalRunScore += sampleResult.totalRunScore
-		totalPairScore += sampleResult.totalFlushScore
-		totalFlushScore += sampleResult.totalFlushScore
-		totalNobScore += sampleResult.totalNobScore
-	}
-
+	// Add up totals
 	totalScore := total15Score + totalRunScore + totalPairScore + totalFlushScore + totalNobScore
 
-	// Print result.
-	type varItem struct {
+	// Print result
+	varMap := []struct {
 		name  string
 		value uint64
-	}
-	varMap := []varItem{
+	}{
 		{"15 Combo", total15Score},
 		{"Run", totalRunScore},
 		{"Pairs", totalPairScore},
@@ -89,8 +100,10 @@ func main() {
 		{"Nob Score", totalNobScore},
 	}
 
-	fmt.Println("Sample Count: ", sampleCount)
 	spacer := fmt.Sprintf("+%s+\n", strings.Repeat("-", 68))
+	fmt.Println("Threads: ", sampleThreads)
+	fmt.Println("Duration: ", duration.Seconds())
+	fmt.Println("Sample Count: ", finalSampleCount)
 	fmt.Printf(spacer)
 	fmt.Printf("| %-20s | %-20s | %-20s |\n", "Score Type", "Points", "Percentage")
 	fmt.Printf(spacer)

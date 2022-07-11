@@ -213,3 +213,31 @@ func TestPairScore(t *testing.T) {
 		t.Fatalf(`%v is not %v`, score, expectedScore)
 	}
 }
+
+func Benchmark15Score(b *testing.B) {
+	deck := CreateDeck()
+	for i := 0; i < b.N; i++ {
+		deck.GetFifteenScore()
+	}
+}
+
+func BenchmarkRunScore(b *testing.B) {
+	deck := CreateDeck()
+	for i := 0; i < b.N; i++ {
+		deck.GetRunScore()
+	}
+}
+
+func BenchmarkPairScore(b *testing.B) {
+	deck := CreateDeck()
+	for i := 0; i < b.N; i++ {
+		deck.GetPairScore()
+	}
+}
+
+func BenchmarkFlushScore(b *testing.B) {
+	deck := CreateDeck()
+	for i := 0; i < b.N; i++ {
+		deck.GetFlushScore()
+	}
+}

@@ -24,3 +24,13 @@ Goal is to keep each project as simple as possible and use good coding practices
 * Making enum like object using const
 * Isolating object components/members (private/public concepts)
 * Unit tests
+
+### [Cribbage Stat](Cribbage-Stat)
+
+* Complex algorithmic functions with focus on complexity (BIG O notation)
+* Channels with Go routines (multi-threading)
+* Performance unit tests
+* Recursion
+* Using [Make](https://pkg.go.dev/builtin#make) to create strutures on the heap
+* Function references (or function pointers)
+
