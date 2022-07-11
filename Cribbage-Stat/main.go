@@ -12,6 +12,45 @@ func getPercentString(numerator uint64, denominator uint64) string {
 	return fmt.Sprintf("%.2f%%", percent)
 }
 
+type sampleResult struct {
+	total15Score    uint64
+	totalRunScore   uint64
+	totalPairScore  uint64
+	totalFlushScore uint64
+	totalNobScore   uint64
+}
+
+func sampleRun(c chan sampleResult) {
+
+	// Create a deck of cards
+	deck := cribbage.CreateDeck()
+
+	// Deal 6 cards
+	dealtHand := deck.Deal(6)
+
+	// Get the best 4 cards that result in highest score
+	selectedHand := dealtHand.GetBestCards(4)
+
+	// Deal cut card
+	var cutCard cribbage.Card = deck.Deal(1)[0]
+
+	// Add cut card to deck
+	dealtHand = append(selectedHand, cutCard)
+
+	// Add 2 cards from deck
+	finalHand := append(dealtHand, deck.Deal(2)...)
+
+	sampleResult := sampleResult{
+		total15Score:    uint64(finalHand.GetFifteenScore()),
+		totalRunScore:   uint64(finalHand.GetRunScore()),
+		totalPairScore:  uint64(finalHand.GetPairScore()),
+		totalFlushScore: uint64(finalHand.GetFlushScore()),
+		totalNobScore:   uint64(finalHand.GetNobScore(&cutCard)),
+	}
+
+	c <- sampleResult
+}
+
 func main() {
 
 	var total15Score uint64 = 0
@@ -21,31 +60,18 @@ func main() {
 	var totalNobScore uint64 = 0
 	var sampleCount int = 1000000
 
+	ch := make(chan sampleResult)
 	for i := 0; i < sampleCount; i++ {
+		go sampleRun(ch)
+	}
 
-		// Create a deck of cards
-		deck := cribbage.CreateDeck()
-
-		// Deal 6 cards
-		dealtHand := deck.Deal(6)
-
-		// Get the best 4 cards that result in highest score
-		selectedHand := dealtHand.GetBestCards(4)
-
-		// Deal cut card
-		var cutCard cribbage.Card = deck.Deal(1)[0]
-
-		// Add cut card to deck
-		dealtHand = append(selectedHand, cutCard)
-
-		// Add 2 cards from deck
-		finalHand := append(dealtHand, deck.Deal(2)...)
-
-		total15Score += uint64(finalHand.GetFifteenScore())
-		totalRunScore += uint64(finalHand.GetRunScore())
-		totalPairScore += uint64(finalHand.GetPairScore())
-		totalFlushScore += uint64(finalHand.GetFlushScore())
-		totalNobScore += uint64(finalHand.GetNobScore(&cutCard))
+	for i := 0; i < sampleCount; i++ {
+		sampleResult := <-ch
+		total15Score += sampleResult.total15Score
+		totalRunScore += sampleResult.totalRunScore
+		totalPairScore += sampleResult.totalFlushScore
+		totalFlushScore += sampleResult.totalFlushScore
+		totalNobScore += sampleResult.totalNobScore
 	}
 
 	totalScore := total15Score + totalRunScore + totalPairScore + totalFlushScore + totalNobScore
