@@ -33,4 +33,4 @@ Goal is to keep each project as simple as possible and use good coding practices
 * Recursion
 * Using [Make](https://pkg.go.dev/builtin#make) to create strutures on the heap
 * Function references (or function pointers)
-
+* Using numbers instead of strings to track data structures to improve performance
