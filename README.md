@@ -27,7 +27,7 @@ Goal is to keep each project as simple as possible and use good coding practices
 
 ### [Cribbage Stat](Cribbage-Stat)
 
-* Complex algorithmic functions with focus on complexity (BIG O notation)
+* Algorithmic functions with focus on complexity (BIG O notation)
 * Channels with Go routines (multi-threading)
 * Performance unit tests
 * Recursion
