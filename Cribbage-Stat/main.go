@@ -36,10 +36,7 @@ func dealerSimulation(c chan sampleResult) {
 	var cutCard cribbage.Card = deck.Deal(1)[0]
 
 	// Add cut card to deck
-	dealtHand = append(selectedHand, cutCard)
-
-	// Add 2 cards from deck
-	finalHand := append(dealtHand, deck.Deal(2)...)
+	finalHand := append(selectedHand, cutCard)
 
 	sampleResult := sampleResult{
 		total15Score:    uint64(finalHand.GetFifteenScore()),
